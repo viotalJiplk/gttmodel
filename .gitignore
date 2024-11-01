@@ -1,0 +1,6 @@
+config.json
+*.pyc
+doc.md
+.env
+
+/.vscode
