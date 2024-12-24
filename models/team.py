@@ -131,7 +131,33 @@ class TeamModel(ObjectDbSync):
         """
         query = ""
         if withJoinstring:
-            query = 'SELECT teamId, nick, generatedRoleId, name, gameId, joinString FROM `teamInfo` WHERE userId=%(userId)s'
+            query = """
+SELECT
+    t.teamId,
+    t.nick,
+    t.generatedRoleId,
+    CASE
+        WHEN grp.permission = "team.generateJoinStringMy" THEN t.joinString
+        ELSE ""
+    END AS joinString,
+    t.name,
+    t.gameId
+FROM
+    `teamInfo` AS t
+LEFT JOIN
+    `generatedRolePermissions` AS grp
+ON
+    t.generatedRoleId = grp.generatedRoleId
+    AND grp.permission = "team.generateJoinStringMy"
+WHERE
+    t.userId = %(userId)s;
+"""
+            cursor.execute(query, {"userId": userId})
+            result = fetchAllWithNames(cursor)
+            for res in result:
+                if res["joinString"] == "":
+                    del res["joinString"]
+            return result
         else:
             query = 'SELECT teamId, nick, generatedRoleId, name, gameId FROM `teamInfo` WHERE userId=%(userId)s'
 
