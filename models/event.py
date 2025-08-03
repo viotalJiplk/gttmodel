@@ -130,7 +130,7 @@ class EventModel(ObjectDbSync):
         Returns:
             list[dict]: list of matches with details
         """
-        query = "SELECT * FROM matchesAll WHERE eventId=%s"
+        query = "SELECT m.*, t1.name AS firstTeamName, t2.name AS secondTeamName FROM matchesAll m JOIN teams t1 ON m.firstTeamId = t1.teamId JOIN teams t2 ON m.secondTeamId = t2.teamId WHERE m.eventId = %s"
         cursor.execute(query, (self.eventId,))
         rows = fetchAllWithNames(cursor)
         for index in range(0, len(rows)):
