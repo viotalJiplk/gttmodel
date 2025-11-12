@@ -29,7 +29,7 @@ class PagePermissions:
     # update = "page.update"
     # delete = "page.delete"
 class SchoolsPermissions:
-    # create = "school.create"
+    create = "school.create"
     # read = "school.read"
     # update = "school.update"
     # delete = "school.delete"

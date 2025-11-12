@@ -24,6 +24,32 @@ class SchoolsModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
+    def create(cls, name: str, cursor, db):
+        """Creates new school
+
+        Args:
+            name (str): name of the school
+        Returns:
+            SchoolsModel: representation of game
+        """
+        name = ' '.join(name.split()) # remove unnecessary whitespace
+        query = "INSERT INTO `schools` (`name`) VALUES (%s)"
+        cursor.execute(query, (name, ))
+        return cls(schoolId=cursor.lastrowid, name=name)
+
+    def toDict(self):
+        """Returns dict representation of object.
+
+        Returns:
+            dict: dict representation of object
+        """
+        return {
+            "schoolId": self.schoolId,
+            "name": self.name,
+        }
+
+    @classmethod
+    @dbConn()
     def listSchools(cls, cursor, db):
         """Lists all schools
 
