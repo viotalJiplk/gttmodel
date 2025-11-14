@@ -202,7 +202,7 @@ class UserModel(ObjectDbSync):
             }
             userObjectReq = requests.get('%s/oauth2/@me' % config.discord.api_endpoint, headers=headers)
         except Exception as e:
-            raise Exception("discord /oauth2/@me error: " + e.args[0])
+            raise Exception("discord /oauth2/@me error: " + str(e.args[0]))
             #discord token endpoint error
         if(userObjectReq.status_code != 200):
             raise Exception("discord /oauth2/@me responded: " + str(userObjectReq.status_code) + userObjectReq.text)
@@ -236,7 +236,7 @@ class UserModel(ObjectDbSync):
         try:
             tokenReq = post('%s/oauth2/token' % config.discord.api_endpoint, data=data, headers=headers)
         except Exception as e:
-            raise Exception("discord token endpoint error: "  + e.args[0])
+            raise Exception("discord token endpoint error: "  + str(e.args[0]))
             #discord token endpoint error
         if(tokenReq.status_code != 200):
             raise Exception("discord token endpoint responded: " + str(tokenReq.status_code) + tokenReq.text)
