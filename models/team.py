@@ -231,12 +231,34 @@ WHERE
 
     @classmethod
     @dbConn()
-    def listParticipatingTeams(self, gameId: int, withDetails: bool, withDiscord: bool, cursor, db):
+    def listParticipatingTeamsWithPlayers(self, gameId: int, cursor, db):
         """List teams that are able to participate in tournament in order of completion of requirements
 
         Args:
             gameId (int): _description_
-            withDetails (bool): list additional sensitive details
+
+        Returns:
+            list[dict]: list of dicts of teams (key = column name)
+        """
+        game = GameModel.getById(gameId)
+        if game is None:
+            return None
+        else:
+            query = "SELECT teamId, name, nick, generatedRoleId, canPlaySince, rank, maxRank FROM eligibleTeams WHERE gameId = %(gameId)s AND canPlaySince IS NOT NULL ORDER BY canPlaySince"
+            cursor.execute(query, {"gameId": game.gameId})
+            result = fetchAllWithNames(cursor)
+            for user in result:
+                if user["canPlaySince"] is not None:
+                    user["canPlaySince"] = user["canPlaySince"].isoformat()
+            return result
+
+    @classmethod
+    @dbConn()
+    def listParticipatingTeamsWithPlayersAdmin(self, gameId: int, withDiscord: bool, cursor, db):
+        """List teams that are able to participate in tournament in order of completion of requirements with admin oly info
+
+        Args:
+            gameId (int): _description_
             withDiscord (bool): get discord user info (slow because has to be fetched from discord api)
 
         Returns:
@@ -246,27 +268,19 @@ WHERE
         if game is None:
             return None
         else:
-            query = ""
-            if withDetails is True:
-                query += "SELECT teamId, name, userId, nick, generatedRoleId, canPlaySince, rank, maxRank FROM eligibleTeams WHERE gameId = %(gameId)s ORDER BY canPlaySince"
-            else:
-                query += "SELECT teamId, name, nick, generatedRoleId, canPlaySince FROM eligibleTeams WHERE gameId = %(gameId)s ORDER BY canPlaySince"
+            query = "SELECT teamId, name, nick, generatedRoleId, canPlaySince, userId, rank, maxRank FROM eligibleTeams  WHERE gameId = %(gameId)s AND canPlaySince IS NOT NULL ORDER BY canPlaySince"
             cursor.execute(query, {"gameId": game.gameId})
             result = fetchAllWithNames(cursor)
-            if withDetails is True:
-                for user in result:
-                    user["userId"] =  str(user["userId"])
-                    if withDiscord is True:
-                        userObject = UserModel.getById(user["userId"])
-                        try:
-                            user["discordUserObject"] = userObject.getDiscordUserObject()
-                        except:
-                            user["discordUserObject"] = ""
             for user in result:
-                if user["canPlaySince"] is not None:
-                    user["canPlaySince"] = user["canPlaySince"].isoformat()
+                user["userId"] =  str(user["userId"])
+                user["canPlaySince"] = user["canPlaySince"].isoformat()
+                if withDiscord is True:
+                    userObject = UserModel.getById(user["userId"])
+                    try:
+                        user["discordUserObject"] = userObject.getDiscordUserObject()
+                    except:
+                        user["discordUserObject"] = None
             return result
-
 
     @dbConn()
     def generateJoinString(self, cursor, db):

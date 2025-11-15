@@ -52,7 +52,7 @@ class TeamPermissions:
     leave = "team.leave"
     listUsers = "team.listUsers"
     listParticipating = "team.listParticipating"
-    listParticipatingDiscord = "team.listParticipatingDiscord"
+    listParticipatingAdmin = "team.listParticipatingAdmin"
     generateJoinString = "team.generateJoinString"
     generateJoinStringMyTeam = "team.generateJoinStringMy"
 class UserPermissions:
