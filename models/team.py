@@ -217,7 +217,7 @@ WHERE
         Returns:
             list[dict]: list of dicts of players (key = column name)
         """
-        query = "SELECT `userId`, `nick`, `generatedRoleId`  FROM `registrations` WHERE teamId=%(teamId)s ORDER BY `generatedRoleId` ASC"
+        query = "SELECT `userId`, `nick`, `generatedRoleId`, `rank`, `maxRank`  FROM `registrations` WHERE teamId=%(teamId)s ORDER BY `generatedRoleId` ASC"
         cursor.execute(query, {"teamId": self.teamId})
         fetched = fetchAllWithNames(cursor)
         result = []
@@ -225,7 +225,9 @@ WHERE
             result.append({
                 'userId': str(player['userId']),
                 'nick': str(player['nick']),
-                'generatedRoleId': player['generatedRoleId']
+                'generatedRoleId': player['generatedRoleId'],
+                'rank': player['rank'],
+                'maxRank': player['maxRank']
             })
         return result
 
