@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn
+from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, Db, Cursor
 from json import dumps
 from datetime import date
 from ..utils import ObjectDbSync
@@ -27,7 +27,7 @@ class SponsorModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, sponsorName, sponsorText, sponsorLink, logo, cursor, db):
+    def create(cls, sponsorName, sponsorText, sponsorLink, logo, cursor: Cursor, db: Db):
         """Creates new sponsor
 
         Args:

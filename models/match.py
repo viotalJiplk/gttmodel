@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn
+from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, Db, Cursor
 from json import dumps
 from ..utils import ObjectDbSync
 from ..utils import defaultLogger
@@ -77,7 +77,7 @@ class MatchModel (ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, stageId:int, firstTeamId:int, secondTeamId:int, firstTeamResult: Union[int, None], secondTeamResult: Union[int, None], cursor, db):
+    def create(cls, stageId:int, firstTeamId:int, secondTeamId:int, firstTeamResult: Union[int, None], secondTeamResult: Union[int, None], cursor: Cursor, db: Db):
         """Creates new match
 
         Args:

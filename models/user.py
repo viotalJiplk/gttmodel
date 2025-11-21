@@ -1,4 +1,4 @@
-from ..utils import dbConn
+from ..utils import dbConn, Db, Cursor
 import datetime
 import requests
 from ..utils import config, fetchAllWithNames
@@ -76,8 +76,8 @@ class UserModel(ObjectDbSync):
         }
 
     @classmethod
-    @dbConn(autocommit=True, buffered=True)
-    def updateOrCreateUser(cls, cursor, db, userId: Union[int, None], refresh_token: Union[str, None] = None, access_token: Union[str, None] = None, expires_in: Union[str, datetime, None] = None, name: Union[str, None] = None, surname: Union[str, None]  = None, adult: Union[bool, None]  = None, schoolId: Union[int, None]  = None, camera: bool = False):
+    @dbConn()
+    def updateOrCreateUser(cls, cursor: Cursor, db: Db, userId: Union[int, None], refresh_token: Union[str, None] = None, access_token: Union[str, None] = None, expires_in: Union[str, datetime, None] = None, name: Union[str, None] = None, surname: Union[str, None]  = None, adult: Union[bool, None]  = None, schoolId: Union[int, None]  = None, camera: bool = False):
         """Update or create user (useful for logging in/registration)
 
         Args:
@@ -283,7 +283,7 @@ class UserModel(ObjectDbSync):
         return ((self.userId != "") and (self.surname != "") and (self.name != "") and (self.adult != None) and (self.schoolId != None ))
 
     @dbConn()
-    def listPermissions(self, gameId: Union[str, None, True], cursor, db):
+    def listPermissions(self, gameId: Union[str, None, True], cursor: Cursor, db: Db):
         """List users permission
 
         Args:
@@ -364,7 +364,7 @@ OR (teams.canPlaySince IS NULL and generatedRolePermissions.eligible = 0)) AND (
         return fetchAllWithNames(cursor)
 
     @dbConn()
-    def listGeneratedRoles(self, cursor, db):
+    def listGeneratedRoles(self, cursor: Cursor, db: Db):
         """List users generatedRoles
 
         Returns:
@@ -379,7 +379,7 @@ OR (teams.canPlaySince IS NULL and generatedRolePermissions.eligible = 0)) AND (
         return fetchAllWithNames(cursor)
 
     @dbConn()
-    def listAssignedRoles(self, cursor, db):
+    def listAssignedRoles(self, cursor: Cursor, db: Db):
         """List users assignedRoles
 
         Returns:

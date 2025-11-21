@@ -1,4 +1,4 @@
-from ..utils import dbConn
+from ..utils import dbConn, Db, Cursor
 from mysql.connector.errors import IntegrityError
 from ..utils import ObjectDbSync, fetchAllWithNames
 from typing import Union
@@ -41,7 +41,7 @@ class AssignedRoleModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, roleName, discordRoleId, cursor, db):
+    def create(cls, roleName, discordRoleId, cursor: Cursor, db: Db):
         """Creates new assignedRole
 
         Args:
@@ -62,7 +62,7 @@ class AssignedRoleModel(ObjectDbSync):
         return cls(assignedRoleId=cursor.lastrowid, roleName=roleName, discordRoleId=discordRoleId)
 
     @dbConn()
-    def listPermissions(self, cursor, db):
+    def listPermissions(self, cursor: Cursor, db: Db):
         """List all permissions that belongs to this role
 
         Returns:

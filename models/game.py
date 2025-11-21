@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn
+from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, Db, Cursor
 from json import dumps
 from datetime import datetime
 from ..utils import ObjectDbSync
@@ -79,7 +79,7 @@ class GameModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, name: str, registrationStart: datetime, registrationEnd: datetime, maxTeams: int, backdrop: str, icon: str, cursor, db):
+    def create(cls, name: str, registrationStart: datetime, registrationEnd: datetime, maxTeams: int, backdrop: str, icon: str, cursor: Cursor, db: Db):
         """Initializes representation of game
 
         Args:
@@ -97,7 +97,7 @@ class GameModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getAllDict(cls, cursor, db):
+    def getAllDict(cls, cursor: Cursor, db: Db):
         """
             Returns list of dict of all games in db
 

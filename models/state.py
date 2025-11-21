@@ -1,5 +1,5 @@
 import datetime
-from ..utils import dbConn
+from ..utils import dbConn, Db, Cursor
 from ..utils import defaultLogger
 from ..utils import genState
 from ..utils import config
@@ -23,8 +23,8 @@ class StateModel:
         self.date = date
 
     @classmethod
-    @dbConn(autocommit =True, buffered=True)
-    def create(cls, cursor, db):
+    @dbConn()
+    def create(cls, cursor: Cursor, db: Db):
         """Creates new state
 
         Returns:
@@ -37,8 +37,8 @@ class StateModel:
         return cls(state=state, date=date)
 
     @classmethod
-    @dbConn(autocommit=True, buffered=True)
-    def testAndDelete(cls, state: str, cursor, db):
+    @dbConn()
+    def testAndDelete(cls, state: str, cursor: Cursor, db: Db):
         """Tests and deletes if state exists
 
         Args:

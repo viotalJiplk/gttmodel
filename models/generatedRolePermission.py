@@ -1,4 +1,4 @@
-from ..utils import dbConn
+from ..utils import dbConn, Db, Cursor
 from mysql.connector.errors import IntegrityError
 from ..utils import ObjectDbSync
 from typing import Union
@@ -49,7 +49,7 @@ class GeneratedRolePermissionModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, permission: str, generatedRoleId: int, gameId: Union[int, None], eligible: bool, cursor, db):
+    def create(cls, permission: str, generatedRoleId: int, gameId: Union[int, None], eligible: bool, cursor: Cursor, db: Db):
         """Creates new generatedRolePermission
 
         Args:

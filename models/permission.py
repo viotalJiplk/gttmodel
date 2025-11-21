@@ -1,6 +1,6 @@
 from mysql.connector.errors import IntegrityError
 from ..utils import ObjectDbSync
-from ..utils import dbConn, fetchAllWithNames
+from ..utils import dbConn, fetchAllWithNames, Db, Cursor
 from typing import Union, List
 from ..models.user import UserModel
 
@@ -25,7 +25,7 @@ class PermissionModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, permission: str, cursor, db):
+    def create(cls, permission: str, cursor: Cursor, db: Db):
         """Creates new permission
 
         Args:
@@ -46,7 +46,7 @@ class PermissionModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def listPublic(cls, gameId: Union[str, None], cursor, db):
+    def listPublic(cls, gameId: Union[str, None], cursor: Cursor, db: Db):
         """Lists all public permission
 
         Args:
@@ -76,7 +76,7 @@ WHERE arp.assignedRoleId IN (
 
     @classmethod
     @dbConn()
-    def listAll(self, cursor, db):
+    def listAll(self, cursor: Cursor, db: Db):
         """Lists all permission
         Returns:
             List[str]: list of permissions

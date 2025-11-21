@@ -1,5 +1,5 @@
 from .attributesObserver import AttributesObserver
-from .db import dbConn, fetchOneWithNames, fetchAllWithNames, DatabaseError
+from .db import dbConn, Db, Cursor, fetchOneWithNames, fetchAllWithNames, DatabaseError
 from mysql.connector import IntegrityError
 from .configLoader import config
 from typing import Union
@@ -23,14 +23,14 @@ class ObjectDbSync(AttributesObserver):
         self.register(self.__update, None, "update")
 
     @dbConn()
-    def __update(self, name, value, cursor, db):
+    def __update(self, name, value, cursor: Cursor, db: Db):
         """Updates attribute in database. (do not call directly)
         """
         query = f"UPDATE `{self.tableName}` SET `{name}` = %s WHERE `{self.tableId}` = %s;"
         cursor.execute(query, (value, getattr(self, self.tableId)))
 
     @dbConn()
-    def delete(self, cursor, db):
+    def delete(self, cursor: Cursor, db: Db):
         """Deletes object from database.
         Raises:
             DatabaseError: if something still depends on object
@@ -50,7 +50,7 @@ class ObjectDbSync(AttributesObserver):
 
     @classmethod
     @dbConn()
-    def getById(cls, tableIdValue:  Union[int, str], cursor, db):
+    def getById(cls, tableIdValue:  Union[int, str], cursor: Cursor, db: Db):
         """Gets object by id.
 
         Args:
@@ -69,7 +69,7 @@ class ObjectDbSync(AttributesObserver):
 
     @classmethod
     @dbConn()
-    def getAllDict(cls, cursor, db):
+    def getAllDict(cls, cursor: Cursor, db: Db):
         """Returns list of dict of all rows in db
 
         Returns:

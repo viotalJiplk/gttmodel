@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, ObjectDbSync, fromTimeDelta
+from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, Db, Cursor, ObjectDbSync, fromTimeDelta
 from json import dumps
 from datetime import date, time
 from mysql.connector.errors import IntegrityError
@@ -61,7 +61,7 @@ class EventModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, date: date, beginTime: time, endTime: time, gameId: int, description: str, eventType: str, cursor, db):
+    def create(cls, date: date, beginTime: time, endTime: time, gameId: int, description: str, eventType: str, cursor: Cursor, db: Db):
         """Creates representation of event
 
         Args:
@@ -78,7 +78,7 @@ class EventModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getById(cls, eventId, cursor, db):
+    def getById(cls, eventId: int, cursor: Cursor, db: Db):
         """Gets event representation by id
 
         Args:
@@ -99,7 +99,7 @@ class EventModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getAllDict(cls, cursor, db):
+    def getAllDict(cls, cursor: Cursor, db: Db):
         """Returns list of dict of all rows in db
 
             Returns:
@@ -113,7 +113,7 @@ class EventModel(ObjectDbSync):
         return rows
 
     @dbConn()
-    def listStages(self, cursor, db):
+    def listStages(self, cursor: Cursor, db: Db):
         """Lists all stages of this event
 
         Returns:
@@ -124,7 +124,7 @@ class EventModel(ObjectDbSync):
         return fetchAllWithNames(cursor)
 
     @dbConn()
-    def allMatchesDict(self, cursor, db):
+    def allMatchesDict(self, cursor: Cursor, db: Db):
         """Lists all matches of this event with details
 
         Returns:

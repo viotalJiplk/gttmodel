@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, genState, ObjectDbSync, DatabaseError
+from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, Db, Cursor, genState, ObjectDbSync, DatabaseError, Cursor
 from .game import GameModel
 from .user import UserModel
 from .generatedRole import GeneratedRoleModel
@@ -47,7 +47,7 @@ class TeamModel(ObjectDbSync):
 
     @classmethod
     @dbConn(autocommit=False, buffered=True)
-    def create(cls, name: str, gameId: int, userId: int, nick: str, rank: int, maxRank: int, cursor, db):
+    def create(cls, name: str, gameId: int, userId: int, nick: str, rank: int, maxRank: int, cursor: Cursor, db: Db):
         """Creates new team
 
         Args:
@@ -84,7 +84,7 @@ class TeamModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getById(cls, teamId: int, cursor, db):
+    def getById(cls, teamId: int, cursor: Cursor, db: Db):
         """Gets team by id
 
         Args:
@@ -102,7 +102,7 @@ class TeamModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getByName(cls, name, cursor, db):
+    def getByName(cls, name, cursor: Cursor, db: Db):
         """Gets team by name
 
         Args:
@@ -119,7 +119,7 @@ class TeamModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def listUsersTeams(self, userId, withJoinstring, cursor, db):
+    def listUsersTeams(self, userId, withJoinstring, cursor: Cursor, db: Db):
         """List teams user is part of
 
         Args:
@@ -165,8 +165,8 @@ WHERE
         result = fetchAllWithNames(cursor)
         return result
 
-    @dbConn(autocommit=True, buffered=True)
-    def join(self, userId: int, nick: str, rank: int, maxRank: int, generatedRoleId: int, cursor, db):
+    @dbConn()
+    def join(self, userId: int, nick: str, rank: int, maxRank: int, generatedRoleId: int, cursor: Cursor, db: Db):
         """Add user to this team
 
         Args:
@@ -186,7 +186,7 @@ WHERE
         return self.__userJoin(userId, nick, rank, maxRank, generatedRoleId, cursor, db)
 
     @dbConn(autocommit=True, buffered=False)
-    def leave(self, userId, cursor, db):
+    def leave(self, userId, cursor: Cursor, db: Db):
         """Removes user from this team
 
         Args:
@@ -211,7 +211,7 @@ WHERE
         return GameModel.getById(self.gameId)
 
     @dbConn()
-    def getPlayers(self, cursor, db):
+    def getPlayers(self, cursor: Cursor, db: Db):
         """Gets list of players of this team
 
         Returns:
@@ -233,7 +233,17 @@ WHERE
 
     @classmethod
     @dbConn()
-    def listParticipatingTeamsWithPlayers(self, gameId: int, cursor, db):
+    def hasUser(cls, teamId: int, userId: int, cursor: Cursor, db: Db) -> bool:
+        query = 'SELECT CASE WHEN COUNT(*) = 1 THEN TRUE ELSE FALSE END AS isInTeam FROM registrations WHERE userid=%(userId)s AND teamId=%(teamId)s'
+        cursor.execute(query, (teamId, userId))
+        result = cursor.fetchone()
+        if result is None:
+            return False
+        return result == 1
+
+    @classmethod
+    @dbConn()
+    def listParticipatingTeamsWithPlayers(self, gameId: int, cursor: Cursor, db: Db):
         """List teams that are able to participate in tournament in order of completion of requirements
 
         Args:
@@ -256,7 +266,7 @@ WHERE
 
     @classmethod
     @dbConn()
-    def listParticipatingTeamsWithPlayersAdmin(self, gameId: int, withDiscord: bool, cursor, db):
+    def listParticipatingTeamsWithPlayersAdmin(self, gameId: int, withDiscord: bool, cursor: Cursor, db: Db):
         """List teams that are able to participate in tournament in order of completion of requirements with admin oly info
 
         Args:
@@ -285,7 +295,7 @@ WHERE
             return result
 
     @dbConn()
-    def generateJoinString(self, cursor, db):
+    def generateJoinString(self, cursor: Cursor, db: Db):
         """Generate joinString
 
         Returns:
@@ -301,7 +311,7 @@ WHERE
             return None
 
     @dbConn()
-    def getUsersRole(self, userId: int, cursor, db):
+    def getUsersRole(self, userId: int, cursor: Cursor, db: Db):
         """Gets role of user in this team
 
         Args:
@@ -318,7 +328,7 @@ WHERE
         else:
             return None
 
-    def __userJoin(self, userId: int, nick: str, rank: int, maxRank: int, generatedRoleId: int, cursor, db):
+    def __userJoin(self, userId: int, nick: str, rank: int, maxRank: int, generatedRoleId: int, cursor: Cursor, db: Db):
         """Tries to join user to team
 
         Args:

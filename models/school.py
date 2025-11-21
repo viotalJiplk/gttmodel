@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, dbConn
+from ..utils import fetchAllWithNames, dbConn, Db, Cursor
 from ..utils import ObjectDbSync
 
 class SchoolsModel(ObjectDbSync):
@@ -24,7 +24,7 @@ class SchoolsModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, name: str, cursor, db):
+    def create(cls, name: str, cursor: Cursor, db: Db):
         """Creates new school
 
         Args:
@@ -50,7 +50,7 @@ class SchoolsModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def listSchools(cls, cursor, db):
+    def listSchools(cls, cursor: Cursor, db: Db):
         """Lists all schools
 
         Returns:

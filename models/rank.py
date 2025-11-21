@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, dbConn
+from ..utils import fetchAllWithNames, dbConn, Db, Cursor
 from json import dumps
 from ..utils import ObjectDbSync
 
@@ -43,7 +43,7 @@ class RankModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, rankName: str, gameId: int, cursor, db):
+    def create(cls, rankName: str, gameId: int, cursor: Cursor, db: Db):
         """Initializes representation of game
 
         Args:
@@ -58,7 +58,7 @@ class RankModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getDictByGame(cls, gameId: int, cursor, db):
+    def getDictByGame(cls, gameId: int, cursor: Cursor, db: Db):
         """
             Returns list of dict of all games in db
 

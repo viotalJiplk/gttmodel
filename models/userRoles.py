@@ -1,4 +1,4 @@
-from ..utils import dbConn
+from ..utils import dbConn, Db, Cursor
 from mysql.connector.errors import IntegrityError
 from ..utils import ObjectDbSync
 
@@ -38,7 +38,7 @@ class UserRoleModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, assignedRoleId: int, userId: int, cursor, db):
+    def create(cls, assignedRoleId: int, userId: int, cursor: Cursor, db: Db):
         """Creates new users assignedRole
 
         Args:

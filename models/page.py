@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn
+from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, Db, Cursor
 from json import dumps
 from datetime import date
 from ..utils import ObjectDbSync
@@ -35,7 +35,7 @@ class PageModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getByName(cls, name: str, cursor, db):
+    def getByName(cls, name: str, cursor: Cursor, db: Db):
         """Gets page by name
 
         Args:

@@ -1,4 +1,4 @@
-from ..utils import ObjectDbSync, dbConn, fetchOneWithNames, fetchAllWithNames
+from ..utils import ObjectDbSync, dbConn, Db, Cursor, fetchOneWithNames, fetchAllWithNames
 from typing import Union
 
 class GeneratedRoleModel(ObjectDbSync):
@@ -65,7 +65,7 @@ class GeneratedRoleModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, roleName: str, discordRoleId: Union[int, None], discordRoleIdEligible: Union[int, None], gameId: int, default: bool, minimal: int, maximal: int, cursor, db):
+    def create(cls, roleName: str, discordRoleId: Union[int, None], discordRoleIdEligible: Union[int, None], gameId: int, default: bool, minimal: int, maximal: int, cursor: Cursor, db: Db):
         """Creates new generatedRole
 
         Args:
@@ -92,7 +92,7 @@ class GeneratedRoleModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getDefaultForGame(cls, gameId: int, cursor, db):
+    def getDefaultForGame(cls, gameId: int, cursor: Cursor, db: Db):
         """Returns default generated role for the game
 
         Args:
@@ -111,7 +111,7 @@ class GeneratedRoleModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def getAllDict(self, gameId, cursor, db):
+    def getAllDict(self, gameId, cursor: Cursor, db: Db):
         """Returns list of dict of all generatedRoles in db
 
             Returns:
@@ -127,7 +127,7 @@ class GeneratedRoleModel(ObjectDbSync):
         return fetchAllWithNames(cursor)
 
     @dbConn()
-    def listPermissions(self, cursor, db):
+    def listPermissions(self, cursor: Cursor, db: Db):
         """List all permissions that belongs to this role
 
         Returns:

@@ -1,4 +1,4 @@
-from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, ObjectDbSync, fromTimeDelta
+from ..utils import fetchAllWithNames, fetchOneWithNames, dbConn, Db, Cursor, ObjectDbSync, fromTimeDelta
 from json import dumps
 from .event import EventModel
 from typing import Union
@@ -54,7 +54,7 @@ class StageModel(ObjectDbSync):
         return EventModel.getById(self.eventId)
 
     @dbConn()
-    def allMatchesDict(self, cursor, db):
+    def allMatchesDict(self, cursor: Cursor, db: Db):
         """Lists all matches of this stage with details
 
         Returns:
@@ -71,7 +71,7 @@ class StageModel(ObjectDbSync):
 
     @classmethod
     @dbConn()
-    def create(cls, eventId:int, stageName:str, stageIndex:int, cursor, db):
+    def create(cls, eventId:int, stageName:str, stageIndex:int, cursor: Cursor, db: Db):
         """Creates new stage
 
         Args:

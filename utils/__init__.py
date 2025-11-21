@@ -1,4 +1,4 @@
-from .db import DatabaseError, dbConn, fetchOneWithNames, fetchAllWithNames
+from .db import DatabaseError, dbConn, fetchOneWithNames, fetchAllWithNames, Db, Cursor
 from .dbSync import ObjectDbSync
 from .permissionList import perms
 from .configLoader import config

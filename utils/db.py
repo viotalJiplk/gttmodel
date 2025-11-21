@@ -1,35 +1,54 @@
 from .configLoader import config
 from mysql.connector import connect
-from mysql.connector.abstracts import MySQLConnectionAbstract
-from mysql.connector.cursor import MySQLCursor
+from mysql.connector.pooling import MySQLConnectionPool, PooledMySQLConnection as Db
+from mysql.connector.cursor import MySQLCursor as Cursor
 from functools import wraps
 
-def getConnection(autocommit = True):
+autoCommitPool = MySQLConnectionPool(
+    pool_name="autocommitPool",
+    pool_size=5,
+    host=config.db.host,
+    user=config.db.user,
+    password=config.db.password,
+    database=config.db.database,
+    charset='utf8mb4',
+    collation='utf8mb4_czech_ci',
+    use_unicode=True,
+    autocommit = True
+)
+
+pool = MySQLConnectionPool(
+    pool_name="autocommitPool",
+    pool_size=5,
+    host=config.db.host,
+    user=config.db.user,
+    password=config.db.password,
+    database=config.db.database,
+    charset='utf8mb4',
+    collation='utf8mb4_czech_ci',
+    use_unicode=True,
+    autocommit = False
+)
+
+def getConnection(autocommit = True) -> Db:
     """Returns database connection
 
     Args:
         autocommit (bool, optional): Is autocommit set? Defaults to True.
 
     Returns:
-        MySQLConnectionAbstract: connection
+        Db: connection
     """
-    db = connect(
-        host=config.db.host,
-        user=config.db.user,
-        password=config.db.password,
-        database=config.db.database,
-        charset='utf8mb4',
-        collation='utf8mb4_czech_ci',
-        use_unicode=True,
-        autocommit=autocommit
-    )
-    return db
+    if autocommit:
+        return autoCommitPool.get_connection()
+    else:
+        return pool.get_connection()
 
-def fetchOneWithNames(cursor: MySQLCursor):
+def fetchOneWithNames(cursor: Cursor):
     """Returns first row as dict (key = column names)
 
     Args:
-        cursor (MySQLCursor): cursor with results of previous action
+        cursor (Cursor): cursor with results of previous action
 
     Returns:
         dict: row
@@ -44,11 +63,11 @@ def fetchOneWithNames(cursor: MySQLCursor):
 
     return result
 
-def fetchAllWithNames(cursor: MySQLCursor):
+def fetchAllWithNames(cursor: Cursor):
     """Returns list of rows as dict (key = column names)
 
     Args:
-        cursor (MySQLCursor): cursor with results of previous action
+        cursor (Cursor): cursor with results of previous action
 
     Returns:
         list[dict]: rows
